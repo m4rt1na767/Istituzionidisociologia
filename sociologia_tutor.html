@@ -1,0 +1,882 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Tutor Sociologia — Mancosu UniTO</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Syne:wght@400;700;800&family=DM+Mono:wght@300;400;500&display=swap');
+
+  :root {
+    --bg: #0e0e12;
+    --surface: #17171f;
+    --card: #1e1e2a;
+    --border: #2d2d40;
+    --accent: #7c6aff;
+    --accent2: #ff6a6a;
+    --accent3: #6affb8;
+    --text: #e8e8f0;
+    --muted: #888;
+    --green: #4ade80;
+    --red: #f87171;
+    --yellow: #fbbf24;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'DM Mono', monospace;
+    font-size: 14px;
+    min-height: 100vh;
+  }
+
+  header {
+    background: var(--surface);
+    border-bottom: 1px solid var(--border);
+    padding: 16px 24px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    position: sticky; top: 0; z-index: 100;
+  }
+
+  header h1 {
+    font-family: 'Syne', sans-serif;
+    font-size: 18px;
+    font-weight: 800;
+    letter-spacing: -0.5px;
+  }
+  header h1 span { color: var(--accent); }
+
+  .deadline {
+    font-size: 11px;
+    color: var(--accent2);
+    background: rgba(255,106,106,0.1);
+    border: 1px solid rgba(255,106,106,0.3);
+    padding: 4px 10px;
+    border-radius: 20px;
+  }
+
+  nav {
+    display: flex;
+    gap: 4px;
+    background: var(--surface);
+    padding: 12px 24px;
+    border-bottom: 1px solid var(--border);
+    overflow-x: auto;
+  }
+
+  .nav-btn {
+    background: none;
+    border: 1px solid var(--border);
+    color: var(--muted);
+    padding: 6px 14px;
+    border-radius: 6px;
+    cursor: pointer;
+    font-family: 'DM Mono', monospace;
+    font-size: 12px;
+    white-space: nowrap;
+    transition: all 0.15s;
+  }
+  .nav-btn:hover { border-color: var(--accent); color: var(--text); }
+  .nav-btn.active { background: var(--accent); border-color: var(--accent); color: white; }
+
+  main { padding: 24px; max-width: 900px; margin: 0 auto; }
+
+  .section { display: none; }
+  .section.active { display: block; }
+
+  /* ─── OVERVIEW ─── */
+  .overview-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 16px; margin-top: 20px; }
+
+  .topic-card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 20px;
+    cursor: pointer;
+    transition: all 0.2s;
+    position: relative;
+    overflow: hidden;
+  }
+  .topic-card::before {
+    content: '';
+    position: absolute; top: 0; left: 0; right: 0; height: 3px;
+    background: var(--card-color, var(--accent));
+  }
+  .topic-card:hover { border-color: var(--accent); transform: translateY(-2px); }
+  .topic-card h3 { font-family: 'Syne', sans-serif; font-size: 14px; font-weight: 700; margin-bottom: 8px; }
+  .topic-card p { font-size: 12px; color: var(--muted); line-height: 1.6; }
+  .topic-card .badge { font-size: 10px; color: var(--muted); margin-top: 10px; }
+
+  /* ─── SCHEMI ─── */
+  .schema-select { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 20px; }
+  .schema-btn { background: var(--card); border: 1px solid var(--border); color: var(--muted); padding: 6px 14px; border-radius: 6px; cursor: pointer; font-family: 'DM Mono', monospace; font-size: 12px; transition: all 0.15s; }
+  .schema-btn:hover, .schema-btn.active { border-color: var(--accent3); color: var(--accent3); }
+
+  .schema-box { background: var(--card); border: 1px solid var(--border); border-radius: 12px; padding: 24px; }
+  .schema-box h2 { font-family: 'Syne', sans-serif; font-size: 18px; font-weight: 700; margin-bottom: 16px; }
+  .schema-box h3 { font-family: 'Syne', sans-serif; font-size: 13px; font-weight: 700; color: var(--accent3); margin: 16px 0 8px; text-transform: uppercase; letter-spacing: 1px; }
+
+  table { width: 100%; border-collapse: collapse; margin: 12px 0; }
+  th { background: var(--surface); padding: 8px 12px; font-size: 11px; text-align: left; color: var(--accent); border-bottom: 1px solid var(--border); }
+  td { padding: 8px 12px; font-size: 12px; border-bottom: 1px solid rgba(45,45,64,0.5); vertical-align: top; }
+  tr:last-child td { border-bottom: none; }
+  tr:hover td { background: rgba(124,106,255,0.05); }
+
+  .bullet-list { list-style: none; padding: 0; }
+  .bullet-list li { padding: 6px 0; font-size: 13px; padding-left: 20px; position: relative; line-height: 1.6; }
+  .bullet-list li::before { content: '▸'; position: absolute; left: 0; color: var(--accent); }
+
+  .tag { display: inline-block; background: rgba(124,106,255,0.15); border: 1px solid rgba(124,106,255,0.3); color: var(--accent); font-size: 10px; padding: 2px 8px; border-radius: 4px; margin: 2px; }
+  .tag.green { background: rgba(106,255,184,0.1); border-color: rgba(106,255,184,0.3); color: var(--accent3); }
+  .tag.red { background: rgba(255,106,106,0.1); border-color: rgba(255,106,106,0.3); color: var(--accent2); }
+
+  /* ─── QUIZ ─── */
+  .quiz-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 20px; }
+  .quiz-meta { font-size: 11px; color: var(--muted); }
+  .score-badge { font-size: 13px; font-weight: 700; }
+  .score-badge span { color: var(--accent3); }
+
+  .question-card { background: var(--card); border: 1px solid var(--border); border-radius: 12px; padding: 24px; }
+  .question-num { font-size: 11px; color: var(--accent); margin-bottom: 8px; }
+  .question-text { font-size: 15px; line-height: 1.7; margin-bottom: 20px; font-family: 'Syne', sans-serif; }
+
+  .options { display: flex; flex-direction: column; gap: 10px; }
+  .option {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 12px 16px;
+    cursor: pointer;
+    font-size: 13px;
+    line-height: 1.5;
+    transition: all 0.15s;
+    display: flex; align-items: flex-start; gap: 10px;
+  }
+  .option:hover:not(.disabled) { border-color: var(--accent); background: rgba(124,106,255,0.08); }
+  .option.correct { border-color: var(--green); background: rgba(74,222,128,0.1); }
+  .option.wrong { border-color: var(--red); background: rgba(248,113,113,0.1); }
+  .option.disabled { cursor: default; }
+  .option-letter { font-size: 11px; color: var(--accent); font-weight: 700; min-width: 18px; margin-top: 1px; }
+
+  .explanation { background: var(--surface); border-left: 3px solid var(--accent3); padding: 14px 16px; margin-top: 16px; border-radius: 0 8px 8px 0; font-size: 13px; line-height: 1.7; display: none; }
+  .explanation.show { display: block; }
+
+  .quiz-nav { display: flex; justify-content: space-between; align-items: center; margin-top: 20px; gap: 12px; }
+  .btn { background: var(--accent); border: none; color: white; padding: 10px 20px; border-radius: 8px; cursor: pointer; font-family: 'DM Mono', monospace; font-size: 13px; font-weight: 500; transition: all 0.15s; }
+  .btn:hover { opacity: 0.9; transform: translateY(-1px); }
+  .btn.secondary { background: var(--card); border: 1px solid var(--border); color: var(--text); }
+  .btn.success { background: var(--green); color: #000; }
+  .btn:disabled { opacity: 0.4; cursor: default; transform: none; }
+
+  .progress-bar { height: 4px; background: var(--border); border-radius: 2px; margin-bottom: 20px; }
+  .progress-fill { height: 100%; background: var(--accent); border-radius: 2px; transition: width 0.3s; }
+
+  /* ─── FLASHCARDS ─── */
+  .flashcard-controls { display: flex; gap: 10px; margin-bottom: 20px; flex-wrap: wrap; align-items: center; }
+  .filter-btn { background: var(--card); border: 1px solid var(--border); color: var(--muted); padding: 5px 12px; border-radius: 6px; cursor: pointer; font-family: 'DM Mono', monospace; font-size: 11px; transition: all 0.15s; }
+  .filter-btn.active { border-color: var(--yellow); color: var(--yellow); }
+
+  .flashcard-area { perspective: 1000px; margin-bottom: 20px; }
+  .flashcard {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    padding: 40px 32px;
+    min-height: 200px;
+    cursor: pointer;
+    position: relative;
+    transition: all 0.3s;
+    display: flex; flex-direction: column; justify-content: center;
+  }
+  .flashcard:hover { border-color: var(--accent); }
+  .flashcard .fc-label { font-size: 10px; color: var(--muted); text-transform: uppercase; letter-spacing: 2px; margin-bottom: 12px; }
+  .flashcard .fc-term { font-family: 'Syne', sans-serif; font-size: 20px; font-weight: 700; line-height: 1.4; }
+  .flashcard .fc-def { font-size: 13px; line-height: 1.8; color: var(--text); display: none; }
+  .flashcard.flipped .fc-term { display: none; }
+  .flashcard.flipped .fc-def { display: block; }
+  .flashcard.flipped .fc-label { color: var(--accent3); }
+  .flashcard .fc-hint { font-size: 11px; color: var(--muted); margin-top: 16px; }
+  .flashcard .fc-category { position: absolute; top: 16px; right: 16px; font-size: 10px; color: var(--muted); background: var(--surface); padding: 3px 8px; border-radius: 4px; }
+
+  .fc-nav { display: flex; align-items: center; gap: 12px; }
+  .fc-counter { font-size: 12px; color: var(--muted); margin: 0 auto; }
+
+  /* ─── FORMULE ─── */
+  .formula-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 16px; }
+  .formula-card { background: var(--card); border: 1px solid var(--border); border-radius: 12px; padding: 20px; }
+  .formula-card h4 { font-family: 'Syne', sans-serif; font-size: 13px; font-weight: 700; margin-bottom: 12px; }
+  .formula { background: var(--bg); border: 1px solid var(--border); border-radius: 8px; padding: 12px 16px; font-size: 14px; color: var(--accent3); text-align: center; margin: 8px 0; font-family: 'Syne', sans-serif; }
+  .formula-note { font-size: 11px; color: var(--muted); margin-top: 8px; line-height: 1.6; }
+
+  /* misc */
+  .alert { background: rgba(251,191,36,0.1); border: 1px solid rgba(251,191,36,0.3); color: var(--yellow); padding: 12px 16px; border-radius: 8px; font-size: 12px; margin-bottom: 16px; }
+  .divider { border: none; border-top: 1px solid var(--border); margin: 20px 0; }
+  .two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+  @media (max-width: 600px) { .two-col { grid-template-columns: 1fr; } }
+
+  .summary-final { background: var(--card); border: 1px solid var(--border); border-radius: 12px; padding: 32px; text-align: center; }
+  .big-score { font-family: 'Syne', sans-serif; font-size: 60px; font-weight: 800; }
+  .big-score.good { color: var(--green); }
+  .big-score.ok { color: var(--yellow); }
+  .big-score.bad { color: var(--red); }
+</style>
+</head>
+<body>
+
+<header>
+  <h1>📊 <span>Sociologia</span> — Tutor UniTO</h1>
+  <div class="deadline">⏰ Scadenza: 15 giugno</div>
+</header>
+
+<nav>
+  <button class="nav-btn active" onclick="showSection('overview')">🗺 Mappa</button>
+  <button class="nav-btn" onclick="showSection('schemi')">📋 Schemi</button>
+  <button class="nav-btn" onclick="showSection('flashcards')">🃏 Flashcard</button>
+  <button class="nav-btn" onclick="showSection('quiz')">✅ Quiz</button>
+  <button class="nav-btn" onclick="showSection('formule')">🔢 Formule</button>
+</nav>
+
+<main>
+
+<!-- ─── OVERVIEW ─── -->
+<div class="section active" id="overview">
+  <div class="alert">📚 Materiale caricato: Dispensa 1 (Logica quant.) + Dispensa 2 (Big Data/Salganik) + Slide 1–5 + Esercizi. Prof. Moreno Mancosu — Scienze della Comunicazione UniTO.</div>
+
+  <h2 style="font-family:'Syne',sans-serif; font-size:22px; font-weight:800;">Mappa del corso</h2>
+  <p style="color:var(--muted); margin-top:6px; font-size:12px;">Clicca sulle sezioni per passare allo schema corrispondente</p>
+
+  <div class="overview-grid" style="margin-top:16px;">
+    <div class="topic-card" style="--card-color:#7c6aff" onclick="showSchemaAndSwitch('cap1')">
+      <h3>Cap. 1 — Logica quantitativa</h3>
+      <p>Scienza vs scienze sociali, approccio ipotetico-deduttivo, Coleman boat, modellizzazione, misurazione.</p>
+      <div class="badge">📖 Slide 1 + Dispensa 1</div>
+    </div>
+    <div class="topic-card" style="--card-color:#6affb8" onclick="showSchemaAndSwitch('cap2')">
+      <h3>Cap. 2 — Descrivere</h3>
+      <p>Dati e variabili, dataset, campioni, misure di tendenza centrale, variabilità, grafici.</p>
+      <div class="badge">📖 Slide 2 + Dispensa 1</div>
+    </div>
+    <div class="topic-card" style="--card-color:#ff6a6a" onclick="showSchemaAndSwitch('cap3')">
+      <h3>Cap. 3 — Spiegare</h3>
+      <p>Tabelle di contingenza, medie condizionate, correlazione di Pearson, variabili dipendenti/indipendenti.</p>
+      <div class="badge">📖 Slide 3 + Dispensa 1</div>
+    </div>
+    <div class="topic-card" style="--card-color:#fbbf24" onclick="showSchemaAndSwitch('cap4')">
+      <h3>Cap. 4 — E dopo?</h3>
+      <p>Inferenza, validità/affidabilità, esperimenti, modelli multivariati, scienze sociali computazionali.</p>
+      <div class="badge">📖 Slide 4</div>
+    </div>
+    <div class="topic-card" style="--card-color:#38bdf8" onclick="showSchemaAndSwitch('bigdata')">
+      <h3>Cap. 5 — Big Data</h3>
+      <p>5W, 10 caratteristiche Salganik (2017), API, scraping, dati found vs designed.</p>
+      <div class="badge">📖 Slide 5 + Dispensa 2</div>
+    </div>
+    <div class="topic-card" style="--card-color:#a78bfa" onclick="showSection('formule')">
+      <h3>Formule & Esercizi</h3>
+      <p>Media, mediana, moda, IQR, Pearson r, percentualizzazione, cross-tab.</p>
+      <div class="badge">📖 Esercizi + Dispensa 1</div>
+    </div>
+  </div>
+</div>
+
+<!-- ─── SCHEMI ─── -->
+<div class="section" id="schemi">
+  <div class="schema-select">
+    <button class="schema-btn active" id="schemabtn-cap1" onclick="showSchema('cap1')">Cap.1 Logica</button>
+    <button class="schema-btn" id="schemabtn-cap2" onclick="showSchema('cap2')">Cap.2 Descrivere</button>
+    <button class="schema-btn" id="schemabtn-cap3" onclick="showSchema('cap3')">Cap.3 Spiegare</button>
+    <button class="schema-btn" id="schemabtn-cap4" onclick="showSchema('cap4')">Cap.4 E dopo</button>
+    <button class="schema-btn" id="schemabtn-bigdata" onclick="showSchema('bigdata')">Cap.5 Big Data</button>
+  </div>
+
+  <!-- SCHEMA CAP 1 -->
+  <div class="schema-box" id="schema-cap1">
+    <h2>📐 Capitolo 1 — La Logica Quantitativa</h2>
+
+    <h3>Scienza vs Senso Comune</h3>
+    <table>
+      <tr><th>Senso comune</th><th>Analisi scientifica</th></tr>
+      <tr><td>Impressioni, casi estremi, esperienza personale</td><td>Misure sistematiche, confronti, ordini di grandezza</td></tr>
+      <tr><td>Visibilità ≠ frequenza</td><td>Distingue visibilità da frequenza</td></tr>
+    </table>
+
+    <h3>5 caratteristiche della logica quantitativa</h3>
+    <table>
+      <tr><th>#</th><th>Caratteristica</th><th>In breve</th></tr>
+      <tr><td>1</td><td><strong>Frammentazione</strong></td><td>Una domanda alla volta, non spiegare tutto</td></tr>
+      <tr><td>2</td><td><strong>Approccio ipotetico-deduttivo</strong></td><td>Teoria → ipotesi → dati → verifica</td></tr>
+      <tr><td>3</td><td><strong>Modellizzazione</strong></td><td>Semplificazione della realtà per studiarla</td></tr>
+      <tr><td>4</td><td><strong>Misurazione</strong></td><td>Tradurre concetti in variabili numeriche</td></tr>
+      <tr><td>5</td><td><strong>Coleman Boat</strong></td><td>Micro↔Macro: livello individuale + effetti aggregati</td></tr>
+    </table>
+
+    <h3>Coleman Boat</h3>
+    <ul class="bullet-list">
+      <li>Schema a «barca»: collega macro-condizioni sociali → micro-comportamenti → effetti macro</li>
+      <li>Esempio: crisi economica (macro) → insicurezza individuale (micro) → calo consumi (macro)</li>
+      <li>La sociologia spiega i fenomeni collettivi passando per le azioni individuali</li>
+    </ul>
+
+    <h3>Tipi di domanda di ricerca</h3>
+    <table>
+      <tr><th>Tipo</th><th>Domanda tipica</th><th>Strumento</th></tr>
+      <tr><td>Univariata (descrittiva)</td><td>«Quanto è grande X?»</td><td>Media, distribuzione</td></tr>
+      <tr><td>Bivariata (relazionale)</td><td>«X e Y sono collegati?»</td><td>Correlazione, cross-tab</td></tr>
+    </table>
+
+    <h3>Obiettivi dell'analisi quantitativa</h3>
+    <ul class="bullet-list">
+      <li><strong>Descrivere</strong>: quanto, per chi, quando — distribuzioni, medie, frequenze</li>
+      <li><strong>Spiegare</strong>: relazioni tra variabili, meccanismi causali</li>
+      <li><strong>Predire</strong>: modelli che anticipano comportamenti (uso più avanzato)</li>
+    </ul>
+  </div>
+
+  <!-- SCHEMA CAP 2 -->
+  <div class="schema-box" id="schema-cap2" style="display:none">
+    <h2>📊 Capitolo 2 — Descrivere</h2>
+
+    <h3>Tipi di variabili</h3>
+    <table>
+      <tr><th>Tipo</th><th>Caratteristica</th><th>Esempi</th><th>Misure applicabili</th></tr>
+      <tr><td><span class="tag">Nominale</span></td><td>Solo categorie, nessun ordine</td><td>Genere, piattaforma preferita</td><td>Moda, frequenze %</td></tr>
+      <tr><td><span class="tag">Ordinale</span></td><td>Categorie ordinate, distanze non uguali</td><td>Interesse politica (per nulla→molto)</td><td>Moda, mediana</td></tr>
+      <tr><td><span class="tag green">Cardinale</span></td><td>Numeri reali, distanze uguali</td><td>Età, like, minuti online</td><td>Media, mediana, DS, correlazione</td></tr>
+    </table>
+
+    <h3>Struttura di un Dataset</h3>
+    <ul class="bullet-list">
+      <li><strong>Righe</strong> = casi / unità di analisi (es. un intervistato, un post)</li>
+      <li><strong>Colonne</strong> = variabili (es. età, n° like, orientamento politico)</li>
+      <li><strong>Cella</strong> = valore di una variabile per un caso specifico</li>
+    </ul>
+
+    <h3>Campioni e Popolazioni</h3>
+    <table>
+      <tr><th>Concetto</th><th>Definizione</th></tr>
+      <tr><td>Popolazione</td><td>Insieme completo di tutti gli elementi di interesse</td></tr>
+      <tr><td>Campione</td><td>Sottoinsieme (rappresentativo) della popolazione</td></tr>
+      <tr><td>Campionamento casuale</td><td>Ogni elemento ha uguale probabilità di essere estratto → rappresentatività</td></tr>
+    </table>
+
+    <h3>Misure di tendenza centrale</h3>
+    <table>
+      <tr><th>Misura</th><th>Come si calcola</th><th>Quando usarla</th><th>Limite</th></tr>
+      <tr><td><strong>Media</strong></td><td>Σvalori / n</td><td>Variabili cardinali, distribuzione simmetrica</td><td>Sensibile agli outlier</td></tr>
+      <tr><td><strong>Mediana</strong></td><td>Valore centrale dopo ordinamento</td><td>Distribuzione asimmetrica, outlier presenti</td><td>Non considera tutti i valori</td></tr>
+      <tr><td><strong>Moda</strong></td><td>Valore più frequente</td><td>Variabili nominali/ordinali</td><td>Può non essere unica</td></tr>
+    </table>
+
+    <h3>Media &gt; Mediana → distribuzione con coda a destra (outlier alti)</h3>
+
+    <h3>Misure di variabilità</h3>
+    <table>
+      <tr><th>Misura</th><th>Cosa misura</th><th>Formula</th></tr>
+      <tr><td>Range</td><td>Ampiezza totale</td><td>Max − Min</td></tr>
+      <tr><td>IQR</td><td>Dispersione della metà centrale</td><td>Q3 − Q1</td></tr>
+      <tr><td>Deviazione Standard</td><td>Dispersione media attorno alla media</td><td>√[ Σ(xi−x̄)² / n ]</td></tr>
+    </table>
+
+    <h3>Grafici per tipo di variabile</h3>
+    <ul class="bullet-list">
+      <li><strong>Categoriale</strong>: grafico a barre, tabella di frequenza</li>
+      <li><strong>Cardinale</strong>: istogramma (attenzione: barre contigue, asse continuo)</li>
+    </ul>
+  </div>
+
+  <!-- SCHEMA CAP 3 -->
+  <div class="schema-box" id="schema-cap3" style="display:none">
+    <h2>🔗 Capitolo 3 — Spiegare</h2>
+
+    <h3>Variabili dipendenti e indipendenti</h3>
+    <table>
+      <tr><th>Termine</th><th>Ruolo</th><th>Simbolo</th></tr>
+      <tr><td>Variabile indipendente (VI)</td><td>Causa ipotetica / predittore</td><td>X</td></tr>
+      <tr><td>Variabile dipendente (VD)</td><td>Effetto da spiegare</td><td>Y</td></tr>
+    </table>
+    <p style="font-size:12px; color:var(--muted); margin-top:8px;">Regola: si percentualizza nella direzione della VI (per riga se VI = righe)</p>
+
+    <h3>Tabelle di Contingenza (Cross-tab)</h3>
+    <ul class="bullet-list">
+      <li>Strumento per la relazione tra <strong>2 variabili categoriali</strong></li>
+      <li>Righe = VI, Colonne = VD (di solito)</li>
+      <li><strong>Percentualizzare per riga</strong>: ogni riga somma a 100% → confronto tra gruppi</li>
+      <li>Frequenze congiunte = celle interne; Frequenze marginali = totali di riga/colonna</li>
+      <li>Se le % per riga sono uguali → nessuna relazione; se variano → relazione presente</li>
+    </ul>
+    <table>
+      <tr><th>Genere</th><th>Per nulla</th><th>Poco</th><th>Abbastanza</th><th>Molto</th><th>Tot</th></tr>
+      <tr><td>Uomo</td><td>6.9%</td><td>22.4%</td><td>49.2%</td><td>21.5%</td><td>100%</td></tr>
+      <tr><td>Donna</td><td>12.0%</td><td>32.1%</td><td>44.0%</td><td>12.0%</td><td>100%</td></tr>
+    </table>
+    <p style="font-size:11px; color:var(--muted); margin-top:6px;">↑ Esempio: interesse politica × genere (ITANES). Le donne mostrano interesse inferiore.</p>
+
+    <h3>Medie condizionate</h3>
+    <ul class="bullet-list">
+      <li>Usate quando VD è <strong>cardinale</strong>, VI è <strong>categoriale</strong></li>
+      <li>Media della VD calcolata separatamente per ogni categoria della VI</li>
+      <li>Se le medie variano tra gruppi → relazione presente</li>
+      <li>Rappresentazione: grafico a barre (medie per gruppo)</li>
+    </ul>
+
+    <h3>Correlazione di Pearson (r)</h3>
+    <table>
+      <tr><th>Valore di r</th><th>Interpretazione</th></tr>
+      <tr><td>+1.0</td><td>Correlazione perfetta positiva</td></tr>
+      <tr><td>+0.7 / +1.0</td><td>Forte positiva</td></tr>
+      <tr><td>+0.3 / +0.7</td><td>Moderata positiva</td></tr>
+      <tr><td>0 / ±0.3</td><td>Debole o assente</td></tr>
+      <tr><td>−0.3 / −0.7</td><td>Moderata negativa</td></tr>
+      <tr><td>−1.0</td><td>Correlazione perfetta negativa</td></tr>
+    </table>
+    <ul class="bullet-list">
+      <li>Si usa per 2 variabili <strong>cardinali</strong></li>
+      <li>Rappresentazione grafica: <strong>scatterplot</strong> (nuvola di punti)</li>
+      <li>⚠️ <strong>Correlazione ≠ causalità</strong></li>
+      <li>Gli outlier influenzano molto r → verificare sempre lo scatterplot</li>
+    </ul>
+  </div>
+
+  <!-- SCHEMA CAP 4 -->
+  <div class="schema-box" id="schema-cap4" style="display:none">
+    <h2>🔭 Capitolo 4 — E dopo? (Metodi avanzati)</h2>
+
+    <h3>Validità e Affidabilità della Misurazione</h3>
+    <table>
+      <tr><th>Concetto</th><th>Definizione</th><th>Esempio</th></tr>
+      <tr><td><strong>Affidabilità</strong></td><td>Coerenza nel tempo e in contesti simili</td><td>Il termometro dà lo stesso risultato in condizioni identiche</td></tr>
+      <tr><td><strong>Validità</strong></td><td>La misura rappresenta davvero il concetto</td><td>Contare i tweet misura davvero l'interesse politico?</td></tr>
+    </table>
+
+    <h3>Tipi di Esperimento</h3>
+    <table>
+      <tr><th>Tipo</th><th>Pro</th><th>Contro</th><th>Esempio</th></tr>
+      <tr><td>Laboratorio</td><td>Alta validità interna (controllo)</td><td>Bassa validità esterna (generalizzabilità)</td><td>Variare tono messaggio elettorale</td></tr>
+      <tr><td>Naturale</td><td>Alta validità esterna</td><td>Bassa validità interna</td><td>Effetti di cambio politica comunicativa</td></tr>
+      <tr><td>Survey (vignette)</td><td>Campione rappresentativo</td><td>Controllo ridotto</td><td>Manipolare formulazione domanda</td></tr>
+    </table>
+
+    <h3>Modelli multivariati</h3>
+    <ul class="bullet-list">
+      <li>Superano il limite delle analisi bivariate (una VI alla volta)</li>
+      <li>Permettono di <strong>controllare</strong> l'effetto di variabili confondenti</li>
+      <li>Esempio: età influenza sia istruzione che consumo TG → regressione multipla isola l'effetto</li>
+    </ul>
+
+    <h3>Scienze Sociali Computazionali</h3>
+    <ul class="bullet-list">
+      <li>Analisi di grandi dataset digitali con metodi computazionali</li>
+      <li>Text mining, sentiment analysis, network analysis</li>
+      <li>Richiede integrazione tra competenze sociologiche e informatiche</li>
+    </ul>
+  </div>
+
+  <!-- SCHEMA BIG DATA -->
+  <div class="schema-box" id="schema-bigdata" style="display:none">
+    <h2>🌐 Capitolo 5 — Big Data (Salganik 2017)</h2>
+
+    <h3>5W invece delle 3V</h3>
+    <table>
+      <tr><th>W</th><th>Domanda</th><th>Importanza</th></tr>
+      <tr><td>Who</td><td>Chi ha prodotto i dati?</td><td>Capire bias e contesto</td></tr>
+      <tr><td>What</td><td>Cosa misurano?</td><td>Validità del costrutto</td></tr>
+      <tr><td>Where</td><td>Dove raccolti?</td><td>Rappresentatività geografica</td></tr>
+      <tr><td>When</td><td>Quando?</td><td>Instabilità temporale</td></tr>
+      <tr><td><strong>Why</strong></td><td>Perché raccolti?</td><td>⭐ Scopo originario ≠ scopo ricerca → repurposing</td></tr>
+    </table>
+
+    <h3>3 fonti di Big Data</h3>
+    <ul class="bullet-list">
+      <li><strong>Dati aziendali online</strong>: query di ricerca, post social, log</li>
+      <li><strong>Dati aziendali "reali"</strong>: casse supermercato, chiamate cellulari, consumi energetici</li>
+      <li><strong>Dati amministrativi</strong>: registri fiscali, scolastici, anagrafici — raccolti da istituzioni pubbliche</li>
+    </ul>
+
+    <h3>10 caratteristiche dei Big Data (Salganik)</h3>
+    <div class="two-col">
+      <div>
+        <h3 style="color:var(--accent3);">✅ Generalmente utili</h3>
+        <table>
+          <tr><th>#</th><th>Caratteristica</th><th>Perché utile</th></tr>
+          <tr><td>1</td><td>Grandi (big)</td><td>Studio eventi rari, eterogeneità, piccole diff.</td></tr>
+          <tr><td>2</td><td>Always-on</td><td>Dati longitudinali, eventi imprevisti, real-time</td></tr>
+          <tr><td>3</td><td>Non reattivi</td><td>Comportamento naturale, no effetto osservatore</td></tr>
+        </table>
+      </div>
+      <div>
+        <h3 style="color:var(--accent2);">⚠️ Generalmente problematiche</h3>
+        <table>
+          <tr><th>#</th><th>Caratteristica</th><th>Problema</th></tr>
+          <tr><td>4</td><td>Incompleti</td><td>Mancano info demografiche, altri comportamenti</td></tr>
+          <tr><td>5</td><td>Inaccessibili</td><td>Dati in mano ad aziende/governi</td></tr>
+          <tr><td>6</td><td>Non rappresentativi</td><td>No campionamento probabilistico</td></tr>
+          <tr><td>7</td><td>Instabili</td><td>Pop., comportamenti e sistema cambiano</td></tr>
+          <tr><td>8</td><td>Confusione algoritmica</td><td>La piattaforma filtra/altera i comportamenti</td></tr>
+          <tr><td>9</td><td>Sporchi</td><td>Bot, errori, dati mancanti</td></tr>
+          <tr><td>10</td><td>Info sensibili</td><td>Privacy, etica della ricerca</td></tr>
+        </table>
+      </div>
+    </div>
+
+    <h3>Twitter vs GSS (General Social Survey)</h3>
+    <table>
+      <tr><th></th><th>Twitter</th><th>GSS</th></tr>
+      <tr><td>Scopo</td><td>Servizio utenti + profitto</td><td>Generare dati per la ricerca</td></tr>
+      <tr><td>Scala</td><td>Enormi</td><td>Limitata</td></tr>
+      <tr><td>Campionamento</td><td>Nessuno (non rappresentativo)</td><td>Probabilistico (rappresentativo)</td></tr>
+      <tr><td>Comparabilità tempo</td><td>Scarsa (instabile)</td><td>Alta</td></tr>
+    </table>
+    <p style="font-size:12px; color:var(--muted); margin-top:8px;">⚠️ Non si può dire quale è "meglio" in astratto: dipende dalla domanda di ricerca.</p>
+
+    <h3>Metodi di raccolta dati social</h3>
+    <ul class="bullet-list">
+      <li><strong>API</strong> (Application Programming Interface): accesso strutturato e legale ai dati della piattaforma</li>
+      <li><strong>Scraping</strong>: estrazione automatica da pagine web (da fare responsabilmente, rispettando TOS)</li>
+      <li><strong>Survey + dati digitali</strong>: combinazione per colmare incompletezza</li>
+    </ul>
+  </div>
+</div>
+
+<!-- ─── FLASHCARDS ─── -->
+<div class="section" id="flashcards">
+  <div class="flashcard-controls">
+    <span style="font-size:12px; color:var(--muted);">Filtra per tema:</span>
+    <button class="filter-btn active" onclick="filterCards('all')">Tutte</button>
+    <button class="filter-btn" onclick="filterCards('logica')">Logica</button>
+    <button class="filter-btn" onclick="filterCards('descrivere')">Descrivere</button>
+    <button class="filter-btn" onclick="filterCards('spiegare')">Spiegare</button>
+    <button class="filter-btn" onclick="filterCards('bigdata')">Big Data</button>
+  </div>
+
+  <div class="flashcard-area">
+    <div class="flashcard" id="fc-card" onclick="flipCard()">
+      <div class="fc-category" id="fc-cat"></div>
+      <div class="fc-label" id="fc-label">TERMINE</div>
+      <div class="fc-term" id="fc-term"></div>
+      <div class="fc-def" id="fc-def"></div>
+      <div class="fc-hint">👆 Clicca per vedere la definizione</div>
+    </div>
+  </div>
+
+  <div class="fc-nav">
+    <button class="btn secondary" onclick="prevCard()">◀ Prec</button>
+    <span class="fc-counter" id="fc-counter">1 / 1</span>
+    <button class="btn secondary" onclick="nextCard()">Succ ▶</button>
+  </div>
+</div>
+
+<!-- ─── QUIZ ─── -->
+<div class="section" id="quiz">
+  <div class="quiz-header">
+    <div>
+      <div class="quiz-meta" id="quiz-meta">Domanda 1 di 20</div>
+    </div>
+    <div class="score-badge">Score: <span id="score-display">0</span>/0</div>
+  </div>
+  <div class="progress-bar"><div class="progress-fill" id="progress-fill" style="width:0%"></div></div>
+
+  <div id="quiz-game">
+    <div class="question-card">
+      <div class="question-num" id="q-num"></div>
+      <div class="question-text" id="q-text"></div>
+      <div class="options" id="q-options"></div>
+      <div class="explanation" id="q-explanation"></div>
+    </div>
+    <div class="quiz-nav">
+      <button class="btn secondary" onclick="restartQuiz()">↩ Ricomincia</button>
+      <button class="btn" id="btn-next" onclick="nextQuestion()" disabled>Prossima →</button>
+    </div>
+  </div>
+
+  <div id="quiz-summary" style="display:none">
+    <div class="summary-final">
+      <div id="final-score-num" class="big-score good"></div>
+      <p style="font-family:'Syne',sans-serif; font-size:18px; margin:16px 0 8px" id="final-msg"></p>
+      <p style="color:var(--muted); font-size:13px" id="final-sub"></p>
+      <button class="btn" style="margin-top:24px" onclick="restartQuiz()">🔄 Riprova con domande diverse</button>
+    </div>
+  </div>
+</div>
+
+<!-- ─── FORMULE ─── -->
+<div class="section" id="formule">
+  <div class="alert">📐 Formule essenziali per l'esame — tutti gli esercizi delle dispense usano queste</div>
+
+  <div class="formula-grid">
+    <div class="formula-card">
+      <h4>📊 Media aritmetica</h4>
+      <div class="formula">x̄ = Σxᵢ / n</div>
+      <div class="formula-note">Somma di tutti i valori diviso il numero di casi. Sensibile agli outlier.</div>
+    </div>
+
+    <div class="formula-card">
+      <h4>📊 Mediana</h4>
+      <div class="formula">Valore centrale dopo ordinamento</div>
+      <div class="formula-note">Se n pari: media dei due valori centrali. Robusta agli outlier. Usa quando media &gt; mediana (coda destra).</div>
+    </div>
+
+    <div class="formula-card">
+      <h4>📊 Moda</h4>
+      <div class="formula">Valore con frequenza massima</div>
+      <div class="formula-note">Unica misura applicabile a variabili nominali. Può essere multipla.</div>
+    </div>
+
+    <div class="formula-card">
+      <h4>📦 IQR (Intervallo Interquartile)</h4>
+      <div class="formula">IQR = Q3 − Q1</div>
+      <div class="formula-note">Misura la dispersione del 50% centrale dei dati. Robusto agli outlier.</div>
+    </div>
+
+    <div class="formula-card">
+      <h4>📐 Deviazione Standard</h4>
+      <div class="formula">σ = √[ Σ(xᵢ − x̄)² / n ]</div>
+      <div class="formula-note">Distanza media dalla media. Stessa unità della variabile. Alta DS → grande variabilità.</div>
+    </div>
+
+    <div class="formula-card">
+      <h4>🔗 Correlazione di Pearson</h4>
+      <div class="formula">r = Σ[(xᵢ−x̄)(yᵢ−ȳ)] / (n·σₓ·σᵧ)</div>
+      <div class="formula-note">Varia tra −1 e +1. Solo per variabili cardinali. r &gt; 0.7 = forte; 0.3–0.7 = moderata; &lt; 0.3 = debole.</div>
+    </div>
+
+    <div class="formula-card">
+      <h4>% Percentuale</h4>
+      <div class="formula">% = (f / n) × 100</div>
+      <div class="formula-note">f = frequenza assoluta della categoria, n = totale. In cross-tab: percentualizza nella direzione della VI.</div>
+    </div>
+
+    <div class="formula-card">
+      <h4>📋 Quartili</h4>
+      <div class="formula">Q1 = 25° percentile · Q3 = 75°</div>
+      <div class="formula-note">D1…D9 = decili. D1 = 10° percentile (10% dei dati sotto). Usati per descrivere la distribuzione.</div>
+    </div>
+  </div>
+
+  <hr class="divider">
+
+  <h3 style="font-family:'Syne',sans-serif; font-weight:700; margin-bottom:16px;">🧮 Regola mnemonica: quando usare cosa</h3>
+  <table>
+    <tr><th>Situazione</th><th>Strumento</th></tr>
+    <tr><td>VD cardinale, VI cardinale</td><td>Correlazione di Pearson + scatterplot</td></tr>
+    <tr><td>VD cardinale, VI categoriale</td><td>Medie condizionate + barchart</td></tr>
+    <tr><td>VD categoriale, VI categoriale</td><td>Tabella di contingenza (cross-tab) % per riga</td></tr>
+    <tr><td>1 variabile cardinale</td><td>Media/mediana/DS + istogramma</td></tr>
+    <tr><td>1 variabile categoriale</td><td>Frequenze % + grafico a barre</td></tr>
+    <tr><td>Distribuzione asimmetrica / outlier</td><td>Mediana + IQR (più robusti)</td></tr>
+  </table>
+</div>
+
+</main>
+
+<script>
+// ─── NAV ───
+function showSection(id) {
+  document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+  document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+  const navBtns = document.querySelectorAll('.nav-btn');
+  const map = ['overview','schemi','flashcards','quiz','formule'];
+  const idx = map.indexOf(id);
+  if (idx >= 0) navBtns[idx].classList.add('active');
+  if (id === 'quiz' && !quizStarted) initQuiz();
+  if (id === 'flashcards') initFlashcards();
+}
+
+function showSchemaAndSwitch(schemaId) {
+  showSection('schemi');
+  showSchema(schemaId);
+}
+
+// ─── SCHEMI ───
+function showSchema(id) {
+  document.querySelectorAll('.schema-box').forEach(b => b.style.display = 'none');
+  document.querySelectorAll('.schema-btn').forEach(b => b.classList.remove('active'));
+  document.getElementById('schema-' + id).style.display = 'block';
+  document.getElementById('schemabtn-' + id).classList.add('active');
+}
+
+// ─── FLASHCARDS ───
+const allCards = [
+  { term: 'Coleman Boat', def: 'Schema concettuale che collega macro-condizioni sociali → micro-comportamenti individuali → effetti macro aggregati. Permette di spiegare i fenomeni collettivi passando per le azioni individuali.', cat: 'logica' },
+  { term: 'Approccio ipotetico-deduttivo', def: 'Metodo scientifico che parte da una teoria, formula ipotesi verificabili, raccoglie dati e verifica/falsifica le ipotesi. Teoria → Ipotesi → Dati → Verifica.', cat: 'logica' },
+  { term: 'Operazionalizzazione', def: 'Processo di traduzione di un concetto astratto (es. "interesse politico") in una misura concreta e osservabile (es. domanda di survey su scala 1–4).', cat: 'logica' },
+  { term: 'Variabile cardinale', def: 'Variabile numerica con distanze uguali tra valori (es. età, n° like, minuti). Si possono applicare media, DS, correlazione di Pearson.', cat: 'descrivere' },
+  { term: 'Variabile nominale', def: 'Variabile categoriale senza ordine (es. genere, piattaforma preferita). Si usa solo la moda e le frequenze percentuali.', cat: 'descrivere' },
+  { term: 'Variabile ordinale', def: 'Variabile categoriale con ordine ma distanze non uguali (es. "per nulla / poco / abbastanza / molto"). Si usa moda e mediana.', cat: 'descrivere' },
+  { term: 'Media vs Mediana', def: 'Quando media > mediana: distribuzione con coda a destra (outlier alti, es. pochi post virali). Usare mediana per descrivere il "livello tipico" in presenza di outlier.', cat: 'descrivere' },
+  { term: 'IQR', def: 'Intervallo Interquartile = Q3 − Q1. Misura la dispersione del 50% centrale dei dati. Robusto agli outlier, usato insieme alla mediana.', cat: 'descrivere' },
+  { term: 'Campione rappresentativo', def: 'Sottoinsieme della popolazione che rispecchia le caratteristiche della popolazione. Si ottiene con campionamento casuale (ogni elemento ha eguale probabilità).', cat: 'descrivere' },
+  { term: 'Tabella di contingenza', def: 'Strumento per analizzare la relazione tra 2 variabili categoriali. Si percentualizza nella direzione della VI (per riga se VI = righe). Se % uguali per riga → nessuna relazione.', cat: 'spiegare' },
+  { term: 'Medie condizionate', def: 'Media della VD (cardinale) calcolata separatamente per ogni categoria della VI (categoriale). Se le medie differiscono tra gruppi → relazione presente.', cat: 'spiegare' },
+  { term: 'Correlazione di Pearson (r)', def: 'Misura l\'associazione lineare tra 2 variabili cardinali. Varia da −1 a +1. Forte: |r| > 0.7; Moderata: 0.3–0.7; Debole: < 0.3. ⚠️ Correlazione ≠ causalità.', cat: 'spiegare' },
+  { term: 'Frequenze marginali vs congiunte', def: 'Frequenze congiunte = celle interne della cross-tab (combinazioni). Frequenze marginali = totali di riga/colonna (distribuzioni univariate).', cat: 'spiegare' },
+  { term: 'Variabile dipendente (VD)', def: 'La variabile che vogliamo spiegare / l\'effetto (Y). Es.: intenzione di voto, n° like, consumo TG.', cat: 'spiegare' },
+  { term: 'Variabile indipendente (VI)', def: 'La causa ipotetica / il predittore (X). Es.: genere, livello di istruzione, tipo di contenuto.', cat: 'spiegare' },
+  { term: '5W dei Big Data', def: 'Who (chi ha prodotto), What (cosa misurano), Where (dove raccolti), When (quando), Why (perché). La W più critica è WHY: i dati non sono stati creati per rispondere alle nostre domande.', cat: 'bigdata' },
+  { term: '10 caratteristiche Salganik (2017)', def: 'Utili: 1.Grandi, 2.Always-on, 3.Non reattivi. Problematiche: 4.Incompleti, 5.Inaccessibili, 6.Non rappresentativi, 7.Instabili, 8.Confusione algoritmica, 9.Sporchi, 10.Info sensibili.', cat: 'bigdata' },
+  { term: 'Non rappresentatività dei Big Data', def: 'I big data non provengono da campioni probabilistici → non si può generalizzare alla popolazione. Ma i confronti interni al campione restano validi. Esempio: caso Tumasjan (tweet ≠ sondaggi).', cat: 'bigdata' },
+  { term: 'Always-on', def: 'Caratteristica dei big data: raccolta continua → dati longitudinali. Permette lo studio di eventi imprevisti (es. Occupy Gezi su Twitter) e stime in tempo reale. Limite: instabilità nel lungo periodo.', cat: 'bigdata' },
+  { term: 'Repurposing dei dati', def: 'Usare dati raccolti per uno scopo diverso da quello originario. Strategia comune nella ricerca sociale. Richiede di capire chi ha creato i dati e perché, e di confrontare il dataset reale con quello ideale.', cat: 'bigdata' },
+  { term: 'API', def: 'Application Programming Interface: sistema formale che permette accesso strutturato e legale ai dati di una piattaforma. È il metodo preferito per raccogliere dati social in modo etico e riproducibile.', cat: 'bigdata' },
+  { term: 'Validità vs Affidabilità', def: 'Affidabilità: coerenza nel tempo (lo strumento dà lo stesso risultato in condizioni simili). Validità: la misura rappresenta davvero il concetto studiato. Entrambe necessarie per buona misurazione.', cat: 'logica' },
+  { term: 'Scatterplot', def: 'Grafico per visualizzare la relazione tra 2 variabili cardinali. Ogni punto = un caso. La "forma" della nuvola indica direzione e forza della correlazione. Serve anche per individuare outlier.', cat: 'spiegare' },
+];
+
+let currentCards = [...allCards];
+let currentCardIndex = 0;
+let cardFlipped = false;
+
+function filterCards(cat) {
+  document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+  event.target.classList.add('active');
+  currentCards = cat === 'all' ? [...allCards] : allCards.filter(c => c.cat === cat);
+  currentCardIndex = 0;
+  cardFlipped = false;
+  updateCard();
+}
+
+function initFlashcards() { currentCardIndex = 0; cardFlipped = false; updateCard(); }
+
+function updateCard() {
+  if (currentCards.length === 0) return;
+  const card = currentCards[currentCardIndex];
+  const el = document.getElementById('fc-card');
+  el.classList.remove('flipped');
+  cardFlipped = false;
+  document.getElementById('fc-term').textContent = card.term;
+  document.getElementById('fc-def').textContent = card.def;
+  document.getElementById('fc-cat').textContent = { logica:'Logica', descrivere:'Descrivere', spiegare:'Spiegare', bigdata:'Big Data' }[card.cat] || card.cat;
+  document.getElementById('fc-label').textContent = 'TERMINE';
+  document.getElementById('fc-counter').textContent = `${currentCardIndex + 1} / ${currentCards.length}`;
+}
+
+function flipCard() {
+  cardFlipped = !cardFlipped;
+  const el = document.getElementById('fc-card');
+  el.classList.toggle('flipped', cardFlipped);
+  document.getElementById('fc-label').textContent = cardFlipped ? 'DEFINIZIONE' : 'TERMINE';
+}
+
+function nextCard() { currentCardIndex = (currentCardIndex + 1) % currentCards.length; updateCard(); }
+function prevCard() { currentCardIndex = (currentCardIndex - 1 + currentCards.length) % currentCards.length; updateCard(); }
+
+// ─── QUIZ ───
+const allQuestions = [
+  { q: 'Cosa rappresenta il "Why" nelle 5W dei Big Data secondo Salganik?', opts: ['La dimensione del dataset','Lo scopo originario per cui i dati sono stati raccolti, che spesso non coincide con le domande del ricercatore','La velocità di raccolta dei dati','Il metodo di analisi utilizzato'], ans: 1, exp: 'Il "Why" è la W più critica: i big data non sono stati creati per rispondere alle nostre domande di ricerca, ma per altri scopi (servire utenti, profitto, gestione amministrativa). Questo crea sfide interpretative.' },
+  { q: 'In una tabella di contingenza tra genere (VI) e interesse politico (VD), come si deve percentualizzare?', opts: ['Per colonna (VD)','Per cella','Per riga (VI), così ogni riga somma a 100%','In base al numero totale di casi'], ans: 2, exp: 'La regola è: si percentualizza nella direzione della variabile indipendente. Se la VI è sulle righe → percentualizzare per riga. Questo permette di confrontare le distribuzioni della VD tra i diversi gruppi della VI.' },
+  { q: 'Un dataset di post su Twitter ha media like = 42.3 e mediana = 14. Cosa possiamo concludere?', opts: ['La distribuzione è simmetrica','Ci sono outlier con pochissimi like','Ci sono post con moltissimi like (outlier) che "tirano su" la media','La mediana è sempre superiore alla media'], ans: 2, exp: 'Quando media > mediana, la distribuzione ha una coda a destra: pochi casi con valori molto alti (post virali) alzano la media senza influenzare la mediana. La mediana descrive meglio il "livello tipico".' },
+  { q: 'Quale delle seguenti NON è una caratteristica "generalmente utile" dei Big Data secondo Salganik (2017)?', opts: ['Grandi (big)','Always-on','Non reattivi','Non rappresentativi'], ans: 3, exp: 'Salganik identifica come utili: 1.Grandi, 2.Always-on, 3.Non reattivi. "Non rappresentativi" è invece una caratteristica problematica: i big data non provengono da campioni probabilistici.' },
+  { q: 'Cosa misura la correlazione di Pearson (r)?', opts: ['La media di due variabili','La relazione causale tra due variabili','Il grado di associazione lineare tra due variabili cardinali, da −1 a +1','La percentuale di varianza spiegata da una variabile sull\'altra'], ans: 2, exp: 'r misura l\'associazione lineare tra 2 variabili cardinali. Varia da −1 (perfetta negativa) a +1 (perfetta positiva). ⚠️ Non implica causalità! r = 0.82 = forte positiva; r = −0.25 = debole negativa.' },
+  { q: 'Nel "Coleman Boat", cosa rappresenta il livello micro?', opts: ['Le strutture sociali macroscopiche','I comportamenti e le azioni individuali','Le statistiche aggregate di un paese','I meccanismi istituzionali'], ans: 1, exp: 'Il Coleman Boat collega macro-condizioni → micro-azioni individuali → effetti macro. Il livello micro è quello dei singoli attori e delle loro scelte/comportamenti. La sociologia spiega i fenomeni aggregati passando per le azioni individuali.' },
+  { q: 'Qual è la differenza tra affidabilità e validità di una misurazione?', opts: ['L\'affidabilità riguarda la dimensione del campione, la validità la qualità delle domande','L\'affidabilità è la coerenza nel tempo; la validità è la capacità di misurare davvero il concetto','L\'affidabilità riguarda i metodi qualitativi, la validità i quantitativi','Sono sinonimi in metodologia della ricerca'], ans: 1, exp: 'Affidabilità = coerenza/riproducibilità nel tempo (lo strumento dà lo stesso risultato in condizioni simili). Validità = la misura rappresenta davvero il concetto che vogliamo misurare. Una misura può essere affidabile ma non valida (es. peso come misura dell\'intelligenza: sempre lo stesso risultato, ma misura la cosa sbagliata).' },
+  { q: 'Se r = −0.25 tra età e minuti sui social, come si interpreta?', opts: ['Forte correlazione negativa: più si è anziani, drasticamente meno si usano i social','Correlazione debole-moderata negativa: tendenza a usare meno i social con l\'età, ma con molta variabilità','Nessuna correlazione: età e uso dei social sono indipendenti','Correlazione positiva: si è sbagliato il segno'], ans: 1, exp: 'r = −0.25 indica correlazione debole-moderata negativa. Il segno negativo significa: all\'aumentare di X (età), Y (minuti social) tende a diminuire. Ma "debole" significa che c\'è molta variabilità: non tutti i giovani usano molto i social, non tutti gli anziani poco.' },
+  { q: 'Qual è il principale pro degli esperimenti di laboratorio?', opts: ['Alta validità esterna (generalizzabilità)','Campioni rappresentativi della popolazione','Alta validità interna (controllo rigoroso delle variabili)','Basso costo economico'], ans: 2, exp: 'Negli esperimenti di laboratorio si può controllare con precisione le variabili confondenti (alta validità interna). Il difetto è la bassa validità esterna: i risultati in laboratorio potrebbero non generalizzarsi al mondo reale.' },
+  { q: 'Per analizzare la relazione tra tipo di contenuto (immagine/reel/carosello) e n° di like, quale strumento è più appropriato?', opts: ['Correlazione di Pearson','Tabella di contingenza percentualizzata','Medie condizionate (media like per tipo di contenuto)','Istogramma'], ans: 2, exp: 'VI = tipo di contenuto (categoriale), VD = n° like (cardinale). Con VI categoriale e VD cardinale si usano le medie condizionate: si calcola la media dei like separatamente per immagine, reel e carosello.' },
+  { q: 'Cosa rende un campione "rappresentativo"?', opts: ['Avere almeno 1000 unità','Includere solo la popolazione target','Essere selezionato con metodi casuali, così ogni elemento ha uguale probabilità di essere incluso','Essere raccolto tramite survey online'], ans: 2, exp: 'La rappresentatività si ottiene attraverso il campionamento casuale (probabilistico): ogni elemento della popolazione ha la stessa probabilità di essere estratto. La dimensione del campione influenza la precisione, ma non la rappresentatività.' },
+  { q: 'Il caso Tumasjan et al. (2010) su Twitter e le elezioni tedesche viene citato per illustrare quale problema dei Big Data?', opts: ['Instabilità delle piattaforme','Non rappresentatività: dataset enorme ma distorto (escludeva il Partito Pirata, il più menzionato)','Inaccessibilità dei dati aziendali','Confusione algoritmica'], ans: 1, exp: 'Tumasjan trovò che la % di menzioni di un partito corrispondeva ai voti. Ma aveva escluso il Partito Pirata (il più menzionato). Includendolo, la corrispondenza spariva. Morale: la grande dimensione del dataset non compensa la non-rappresentatività.' },
+  { q: 'Qual è la differenza tra frequenze congiunte e marginali in una cross-tab?', opts: ['Le frequenze congiunte sono i totali di riga/colonna, le marginali sono nelle celle interne','Le frequenze congiunte sono nelle celle interne (combinazioni); le marginali sono i totali di riga/colonna (distribuzioni univariate)','Non c\'è differenza: è solo terminologia alternativa','Le marginali si riferiscono solo alle variabili ordinali'], ans: 1, exp: 'Frequenze congiunte = celle interne = combinazioni specifiche delle due variabili (es. 17 uomini "per nulla" interessati). Frequenze marginali = totali di riga/colonna = ripetono le distribuzioni univariate delle singole variabili.' },
+  { q: 'Cosa si intende per "repurposing" dei dati?', opts: ['Eliminare i dati obsoleti da un dataset','Usare dati raccolti per uno scopo diverso da quello originario per rispondere a nuove domande di ricerca','Raccogliere dati tramite API','Aggregare più dataset in uno solo'], ans: 1, exp: 'Il repurposing è l\'utilizzo di dati found (trovati, non progettati per la ricerca) per rispondere a domande diverse da quelle per cui erano stati creati. Richiede sempre di chiedersi: chi ha creato questi dati e perché? Cosa possiamo e non possiamo imparare da essi?' },
+  { q: 'Media = 36.8, Mediana = 30. Quale misura è più adatta per descrivere il "tipo" di spettatore?', opts: ['La media, perché usa tutti i valori','La mediana, perché è più robusta agli outlier che "tirano su" la media','Entrambe sono equivalenti in questo caso','Nessuna delle due: serve la moda'], ans: 1, exp: 'Con media > mediana (distribuzione a coda destra), la mediana descrive meglio il valore "tipico" perché non è influenzata dagli outlier (in questo caso, spettatori molto anziani come 62 e 71 anni). La media è "tirata su" da questi valori estremi.' },
+  { q: 'Qual è la caratteristica "Always-on" dei Big Data?', opts: ['I dati sono sempre disponibili gratuitamente online','I sistemi raccolgono dati costantemente, generando serie longitudinali e permettendo lo studio di eventi imprevisti','I big data sono aggiornati in tempo reale senza errori','Gli utenti possono accedere sempre ai propri dati'], ans: 1, exp: '"Always-on" significa raccolta continua e automatica → dati longitudinali. Vantaggi: studio di eventi imprevisti (es. Occupy Gezi: dati pre/durante/post evento), stime in tempo reale. Limite: non adatto per misurare cambiamenti su periodi molto lunghi a causa dell\'instabilità.' },
+  { q: 'Qual è la differenza tra variabile nominale e ordinale?', opts: ['Nella nominale i valori sono numerici, nell\'ordinale sono categoriali','Entrambe sono categoriali, ma l\'ordinale ha un ordine naturale tra le categorie (es. per nulla < poco < abbastanza < molto)','La nominale ha più categorie dell\'ordinale','Non ci sono differenze pratiche per l\'analisi'], ans: 1, exp: 'Entrambe sono variabili categoriali. La nominale non ha ordine (es. genere, nazionalità). L\'ordinale ha un ordine naturale ma distanze non uguali tra categorie (es. scala di interesse politico). Sull\'ordinale si può calcolare mediana, sulla nominale solo moda.' },
+  { q: 'Cosa sono i "dati amministrativi" tra le 3 fonti di Big Data?', opts: ['Dati raccolti tramite questionari amministrativi','Registri fiscali, scolastici, anagrafici raccolti da istituzioni pubbliche, spesso digitalizzati di recente','Dati estratti dalle pagine web dei ministeri','Log dei server informatici di grandi aziende'], ans: 1, exp: 'I dati amministrativi sono la terza fonte di big data: registri pubblici (fiscali, scolastici, anagrafici) raccolti da istituzioni per scopi di governance, spesso da secoli. La digitalizzazione li ha resi molto più accessibili e analizzabili per la ricerca sociale.' },
+  { q: 'Perché la "non reattività" è considerata un vantaggio dei Big Data?', opts: ['Perché i dati sono più accurati delle survey','Perché i partecipanti non sanno di essere osservati, quindi non modificano il comportamento (assenza di effetto osservatore)','Perché non richiedono il consenso degli utenti','Perché eliminano completamente i bias di risposta'], ans: 1, exp: 'La reattività è il problema per cui le persone cambiano comportamento sapendo di essere osservate. I big data spesso la evitano perché gli utenti non sanno che i loro dati vengono usati per ricerca. Es.: le ricerche Google misurano razzismo latente meglio delle survey (Stephens-Davidowitz, 2014).' },
+  { q: 'Per analizzare la relazione tra zona geografica (Nord/Centro/Sud) e piattaforma social preferita, si usa:', opts: ['Correlazione di Pearson + scatterplot','Medie condizionate + barchart','Tabella di contingenza percentualizzata per riga (zona = VI)','Istogramma delle frequenze'], ans: 2, exp: 'Zona geografica = VI categoriale; piattaforma = VD categoriale. → Cross-tab (tabella di contingenza). Si percentualizza per riga (VI = righe) così ogni zona somma al 100% e possiamo confrontare le preferenze tra zone.' },
+];
+
+let quizQuestions = [];
+let currentQ = 0;
+let correctCount = 0;
+let answered = false;
+let quizStarted = false;
+
+function shuffle(arr) { return [...arr].sort(() => Math.random() - 0.5); }
+
+function initQuiz() {
+  quizStarted = true;
+  quizQuestions = shuffle(allQuestions).slice(0, 15);
+  currentQ = 0; correctCount = 0; answered = false;
+  document.getElementById('quiz-game').style.display = 'block';
+  document.getElementById('quiz-summary').style.display = 'none';
+  renderQuestion();
+}
+
+function renderQuestion() {
+  const q = quizQuestions[currentQ];
+  document.getElementById('q-num').textContent = `Capitolo/Argomento: ${getTopicLabel(currentQ)}`;
+  document.getElementById('q-text').textContent = q.q;
+  document.getElementById('quiz-meta').textContent = `Domanda ${currentQ + 1} di ${quizQuestions.length}`;
+  document.getElementById('score-display').textContent = correctCount;
+  document.getElementById('progress-fill').style.width = `${(currentQ / quizQuestions.length) * 100}%`;
+
+  const opts = document.getElementById('q-options');
+  opts.innerHTML = '';
+  const letters = ['A','B','C','D'];
+  q.opts.forEach((opt, i) => {
+    const div = document.createElement('div');
+    div.className = 'option';
+    div.innerHTML = `<span class="option-letter">${letters[i]}</span><span>${opt}</span>`;
+    div.onclick = () => selectAnswer(i);
+    opts.appendChild(div);
+  });
+
+  document.getElementById('q-explanation').className = 'explanation';
+  document.getElementById('btn-next').disabled = true;
+  answered = false;
+}
+
+function getTopicLabel(idx) {
+  const labels = ['Big Data','Spiegare','Descrivere','Big Data','Spiegare','Logica','Logica','Spiegare','Logica','Spiegare','Descrivere','Big Data','Spiegare','Big Data','Descrivere','Big Data','Descrivere','Big Data','Big Data','Spiegare'];
+  return labels[idx % labels.length];
+}
+
+function selectAnswer(chosen) {
+  if (answered) return;
+  answered = true;
+  const q = quizQuestions[currentQ];
+  const opts = document.querySelectorAll('.option');
+  opts.forEach((o, i) => {
+    o.classList.add('disabled');
+    if (i === q.ans) o.classList.add('correct');
+    else if (i === chosen) o.classList.add('wrong');
+  });
+  if (chosen === q.ans) correctCount++;
+  const expEl = document.getElementById('q-explanation');
+  expEl.textContent = '💡 ' + q.exp;
+  expEl.classList.add('show');
+  document.getElementById('btn-next').disabled = false;
+  document.getElementById('score-display').textContent = correctCount;
+}
+
+function nextQuestion() {
+  currentQ++;
+  if (currentQ >= quizQuestions.length) {
+    showSummary();
+  } else {
+    renderQuestion();
+  }
+}
+
+function showSummary() {
+  document.getElementById('quiz-game').style.display = 'none';
+  document.getElementById('quiz-summary').style.display = 'block';
+  const pct = Math.round((correctCount / quizQuestions.length) * 100);
+  const numEl = document.getElementById('final-score-num');
+  numEl.textContent = `${correctCount}/${quizQuestions.length}`;
+  numEl.className = 'big-score ' + (pct >= 70 ? 'good' : pct >= 50 ? 'ok' : 'bad');
+  document.getElementById('final-msg').textContent = pct >= 70 ? '🎉 Ottimo! Sei sulla buona strada.' : pct >= 50 ? '💪 Dai, ci siamo quasi!' : '📚 Ripassa gli schemi e riprova.';
+  document.getElementById('final-sub').textContent = `${pct}% di risposte corrette. Rivedi gli schemi degli argomenti sbagliati.`;
+  document.getElementById('progress-fill').style.width = '100%';
+}
+
+function restartQuiz() {
+  quizStarted = false;
+  initQuiz();
+}
+</script>
+</body>
+</html>
