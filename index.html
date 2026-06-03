@@ -212,6 +212,38 @@
   .formula { background: var(--bg); border: 1px solid var(--border); border-radius: 8px; padding: 12px 16px; font-size: 14px; color: var(--accent3); text-align: center; margin: 8px 0; font-family: 'Syne', sans-serif; }
   .formula-note { font-size: 11px; color: var(--muted); margin-top: 8px; line-height: 1.6; }
 
+  /* ─── GRAFICI ─── */
+  .grafici-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(380px, 1fr)); gap: 20px; margin-top: 20px; }
+  .grafico-card { background: var(--card); border: 1px solid var(--border); border-radius: 12px; padding: 24px; }
+  .grafico-card h3 { font-family: 'Syne', sans-serif; font-size: 15px; font-weight: 700; margin-bottom: 6px; }
+  .grafico-tipo { font-size: 10px; text-transform: uppercase; letter-spacing: 1.5px; color: var(--accent); margin-bottom: 14px; }
+  .grafico-visual { background: var(--bg); border: 1px solid var(--border); border-radius: 8px; padding: 16px; margin-bottom: 14px; }
+  .bar-chart { display: flex; flex-direction: column; gap: 8px; }
+  .bar-row { display: flex; align-items: center; gap: 10px; font-size: 11px; }
+  .bar-label { width: 110px; text-align: right; color: var(--muted); flex-shrink: 0; }
+  .bar-track { flex: 1; background: rgba(255,255,255,0.05); border-radius: 3px; height: 18px; position: relative; }
+  .bar-fill { height: 100%; border-radius: 3px; display: flex; align-items: center; padding-left: 6px; font-size: 10px; font-weight: 700; color: white; transition: width 0.6s; }
+  .bar-fill.purple { background: var(--accent); }
+  .bar-fill.green { background: var(--accent3); color: #000; }
+  .bar-fill.red { background: var(--accent2); }
+  .bar-fill.yellow { background: var(--yellow); color: #000; }
+  .scatter-area { position: relative; height: 140px; border-left: 2px solid var(--border); border-bottom: 2px solid var(--border); margin: 8px 12px 20px 12px; }
+  .scatter-dot { position: absolute; width: 7px; height: 7px; border-radius: 50%; background: var(--accent); transform: translate(-50%, 50%); }
+  .scatter-label-x { text-align: center; font-size: 10px; color: var(--muted); margin-top: 4px; }
+  .scatter-label-y { position: absolute; left: -28px; top: 50%; transform: translateY(-50%) rotate(-90deg); font-size: 10px; color: var(--muted); white-space: nowrap; }
+  .trend-line { position: absolute; bottom: 0; left: 0; width: 100%; height: 100%; pointer-events: none; }
+  .soc-note { font-size: 12px; color: var(--text); line-height: 1.7; }
+  .soc-note strong { color: var(--accent3); }
+  .dist-row { display: flex; align-items: flex-end; gap: 3px; height: 80px; margin-bottom: 6px; }
+  .dist-bar { flex: 1; background: var(--accent); border-radius: 3px 3px 0 0; opacity: 0.85; }
+  .dist-labels { display: flex; justify-content: space-between; font-size: 9px; color: var(--muted); }
+  .mean-line { border-left: 2px dashed var(--accent2); height: 90px; position: absolute; bottom: 26px; }
+  .median-line { border-left: 2px dashed var(--accent3); height: 90px; position: absolute; bottom: 26px; }
+  .dist-wrap { position: relative; }
+  .line-legend { display: flex; gap: 14px; font-size: 10px; margin-top: 4px; }
+  .line-legend span { display: flex; align-items: center; gap: 4px; }
+  .dot-legend { width: 10px; height: 2px; display: inline-block; }
+
   /* misc */
   .alert { background: rgba(251,191,36,0.1); border: 1px solid rgba(251,191,36,0.3); color: var(--yellow); padding: 12px 16px; border-radius: 8px; font-size: 12px; margin-bottom: 16px; }
   .divider { border: none; border-top: 1px solid var(--border); margin: 20px 0; }
@@ -238,6 +270,7 @@
   <button class="nav-btn" onclick="showSection('flashcards')">🃏 Flashcard</button>
   <button class="nav-btn" onclick="showSection('quiz')">✅ Quiz</button>
   <button class="nav-btn" onclick="showSection('formule')">🔢 Formule</button>
+  <button class="nav-btn" onclick="showSection('grafici')">📈 Grafici</button>
 </nav>
 
 <main>
@@ -670,6 +703,262 @@
   </table>
 </div>
 
+<!-- ─── GRAFICI ─── -->
+<div class="section" id="grafici">
+  <div class="alert">📈 Ogni grafico che compare nelle dispense di Mancosu, con spiegazione sociologica dei dati e del tipo di visualizzazione.</div>
+  <h2 style="font-family:'Syne',sans-serif; font-size:22px; font-weight:800;">Grafici delle dispense — lettura sociologica</h2>
+  <p style="color:var(--muted); font-size:12px; margin-top:6px; margin-bottom:4px;">Capire non solo <em>come</em> leggere un grafico, ma <em>cosa ci dice</em> sulla realtà sociale.</p>
+
+  <div class="grafici-grid">
+
+    <!-- 1 — Cross-tab interesse politico × genere -->
+    <div class="grafico-card">
+      <div class="grafico-tipo">Grafico a barre raggruppate · Cross-tab</div>
+      <h3>Interesse per la politica per genere (ITANES)</h3>
+      <div class="grafico-visual">
+        <div style="font-size:10px; color:var(--muted); margin-bottom:10px;">% per riga — VI = Genere</div>
+        <div style="font-size:10px; color:var(--muted); margin-bottom:6px;">UOMINI</div>
+        <div class="bar-chart">
+          <div class="bar-row"><span class="bar-label">Per nulla</span><div class="bar-track"><div class="bar-fill purple" style="width:6.9%">6.9%</div></div></div>
+          <div class="bar-row"><span class="bar-label">Poco</span><div class="bar-track"><div class="bar-fill purple" style="width:22.4%">22.4%</div></div></div>
+          <div class="bar-row"><span class="bar-label">Abbastanza</span><div class="bar-track"><div class="bar-fill purple" style="width:49.2%">49.2%</div></div></div>
+          <div class="bar-row"><span class="bar-label">Molto</span><div class="bar-track"><div class="bar-fill purple" style="width:21.5%">21.5%</div></div></div>
+        </div>
+        <div style="font-size:10px; color:var(--muted); margin: 10px 0 6px;">DONNE</div>
+        <div class="bar-chart">
+          <div class="bar-row"><span class="bar-label">Per nulla</span><div class="bar-track"><div class="bar-fill red" style="width:12%">12%</div></div></div>
+          <div class="bar-row"><span class="bar-label">Poco</span><div class="bar-track"><div class="bar-fill red" style="width:32.1%">32.1%</div></div></div>
+          <div class="bar-row"><span class="bar-label">Abbastanza</span><div class="bar-track"><div class="bar-fill red" style="width:44%">44%</div></div></div>
+          <div class="bar-row"><span class="bar-label">Molto</span><div class="bar-track"><div class="bar-fill red" style="width:12%">12%</div></div></div>
+        </div>
+      </div>
+      <p class="soc-note">
+        <strong>Come si legge:</strong> percentualizzare per riga (VI = genere) permette di confrontare la distribuzione dell'interesse politico tra uomini e donne, neutralizzando le differenze di numerosità tra i gruppi.<br><br>
+        <strong>Lettura sociologica:</strong> il gender gap politico è un fenomeno documentato — le donne mostrano storicamente interesse inferiore alla politica istituzionale. Non indica disinteresse per i temi sociali, ma piuttosto minor attrazione per la politica partitica tradizionale, spesso percepita come "maschile". La percentuale «per nulla» è quasi doppia nelle donne (12% vs 6.9%), mentre «molto» è la metà (12% vs 21.5%). Il gap si va riducendo nelle generazioni più giovani.
+      </p>
+    </div>
+
+    <!-- 2 — Istogramma distribuzione asimmetrica (like) -->
+    <div class="grafico-card">
+      <div class="grafico-tipo">Istogramma · Distribuzione asimmetrica</div>
+      <h3>Distribuzione dei like su un post: media vs mediana</h3>
+      <div class="grafico-visual">
+        <div class="dist-wrap">
+          <div style="font-size:10px; color:var(--muted); margin-bottom:6px;">Frequenza</div>
+          <div class="dist-row" style="position:relative;">
+            <div class="dist-bar" style="height:90%;"></div>
+            <div class="dist-bar" style="height:75%;"></div>
+            <div class="dist-bar" style="height:50%;"></div>
+            <div class="dist-bar" style="height:30%;"></div>
+            <div class="dist-bar" style="height:18%;"></div>
+            <div class="dist-bar" style="height:10%;"></div>
+            <div class="dist-bar" style="height:6%;"></div>
+            <div class="dist-bar" style="height:4%;"></div>
+            <div class="dist-bar" style="height:3%; background:var(--accent2);"></div>
+            <div class="dist-bar" style="height:2%; background:var(--accent2);"></div>
+            <!-- linee vericali sovrapposte tramite pseudo-absolute non disponibile inline: usiamo testo -->
+          </div>
+          <div class="dist-labels"><span>0</span><span>20</span><span>40</span><span>60</span><span>80</span><span>100+</span></div>
+          <div class="line-legend" style="margin-top:8px;">
+            <span><span class="dot-legend" style="background:var(--accent3); height:2px;"></span> Mediana ≈ 14</span>
+            <span><span class="dot-legend" style="background:var(--accent2); height:2px;"></span> Media ≈ 42.3</span>
+            <span style="color:var(--muted);">(le barre rosse = outlier virali)</span>
+          </div>
+        </div>
+      </div>
+      <p class="soc-note">
+        <strong>Come si legge:</strong> nell'istogramma le barre sono contigue (asse continuo), l'altezza indica la frequenza. La coda lunga a destra segnala pochi casi con valori molto alti.<br><br>
+        <strong>Lettura sociologica:</strong> la distribuzione dei like sui social media è quasi universalmente <em>power-law</em> (coda a destra): la stragrande maggioranza dei post riceve pochi like, mentre pochi contenuti virali ne raccolgono migliaia. Questo riflette la struttura dell'attenzione online — risorsa scarsa e concentrata. Usare la media (42.3) sovrastima il livello "tipico"; la mediana (14) descrive l'esperienza reale della maggioranza dei creator. Implicazione: politiche di piattaforma basate sulla media possono premiare sistematicamente solo chi produce contenuti virali.
+      </p>
+    </div>
+
+    <!-- 3 — Scatterplot correlazione di Pearson -->
+    <div class="grafico-card">
+      <div class="grafico-tipo">Scatterplot · Correlazione di Pearson</div>
+      <h3>Età e minuti di utilizzo dei social media (r = −0.25)</h3>
+      <div class="grafico-visual">
+        <div style="position:relative; padding-left:30px;">
+          <div class="scatter-label-y">Minuti social / giorno</div>
+          <div class="scatter-area" id="scatter1">
+            <svg class="trend-line" viewBox="0 0 100 140" preserveAspectRatio="none">
+              <line x1="0" y1="20" x2="100" y2="120" stroke="rgba(255,106,106,0.4)" stroke-width="1" stroke-dasharray="4,3"/>
+            </svg>
+            <!-- punti simulati: (età % larghezza, minuti invertiti % altezza) -->
+            <div class="scatter-dot" style="left:10%;bottom:75%;"></div>
+            <div class="scatter-dot" style="left:15%;bottom:80%;"></div>
+            <div class="scatter-dot" style="left:18%;bottom:60%;"></div>
+            <div class="scatter-dot" style="left:22%;bottom:85%;"></div>
+            <div class="scatter-dot" style="left:25%;bottom:55%;"></div>
+            <div class="scatter-dot" style="left:30%;bottom:70%;"></div>
+            <div class="scatter-dot" style="left:35%;bottom:65%;"></div>
+            <div class="scatter-dot" style="left:38%;bottom:50%;"></div>
+            <div class="scatter-dot" style="left:42%;bottom:60%;"></div>
+            <div class="scatter-dot" style="left:48%;bottom:45%;"></div>
+            <div class="scatter-dot" style="left:52%;bottom:55%;"></div>
+            <div class="scatter-dot" style="left:55%;bottom:40%;"></div>
+            <div class="scatter-dot" style="left:60%;bottom:35%;"></div>
+            <div class="scatter-dot" style="left:65%;bottom:30%;"></div>
+            <div class="scatter-dot" style="left:70%;bottom:45%;"></div>
+            <div class="scatter-dot" style="left:75%;bottom:25%;"></div>
+            <div class="scatter-dot" style="left:78%;bottom:20%;"></div>
+            <div class="scatter-dot" style="left:82%;bottom:30%;"></div>
+            <div class="scatter-dot" style="left:88%;bottom:15%;"></div>
+            <div class="scatter-dot" style="left:92%;bottom:22%;"></div>
+          </div>
+          <div class="scatter-label-x">Età</div>
+        </div>
+      </div>
+      <p class="soc-note">
+        <strong>Come si legge:</strong> ogni punto è un individuo. La retta tratteggiata è la tendenza (regressione). La nuvola inclinata verso il basso a destra indica correlazione negativa. r = −0.25 = debole-moderata: molta variabilità, non determinismo.<br><br>
+        <strong>Lettura sociologica:</strong> la correlazione negativa tra età e uso dei social riflette il <em>digital divide generazionale</em>, ma la debolezza di r (−0.25) avverte: non è una legge assoluta. Molti anziani sono utenti attivi; molti giovani usano i social meno della media. Le variabili confondenti (istruzione, reddito, tipo di lavoro) spiegano molto della varianza residua. Questo esemplifica perché la correlazione bivariata va integrata con modelli multivariati.
+      </p>
+    </div>
+
+    <!-- 4 — Medie condizionate: like per tipo di contenuto -->
+    <div class="grafico-card">
+      <div class="grafico-tipo">Grafico a barre · Medie condizionate</div>
+      <h3>Media like per tipo di contenuto (VD cardinale, VI categoriale)</h3>
+      <div class="grafico-visual">
+        <div style="font-size:10px; color:var(--muted); margin-bottom:10px;">Media like per tipo di post (valori ipotetici da esercizio)</div>
+        <div class="bar-chart">
+          <div class="bar-row"><span class="bar-label">Immagine</span><div class="bar-track"><div class="bar-fill green" style="width:38%">38</div></div></div>
+          <div class="bar-row"><span class="bar-label">Carosello</span><div class="bar-track"><div class="bar-fill green" style="width:57%">57</div></div></div>
+          <div class="bar-row"><span class="bar-label">Reel / Video</span><div class="bar-track"><div class="bar-fill green" style="width:82%">82</div></div></div>
+          <div class="bar-row"><span class="bar-label">Solo testo</span><div class="bar-track"><div class="bar-fill green" style="width:21%">21</div></div></div>
+        </div>
+      </div>
+      <p class="soc-note">
+        <strong>Come si legge:</strong> si usa quando la VD è cardinale (n° like) e la VI è categoriale (tipo di contenuto). Ogni barra = media della VD per quella categoria. Se le medie sono diverse tra gruppi → esiste una relazione.<br><br>
+        <strong>Lettura sociologica:</strong> le differenze nelle medie riflettono come gli algoritmi delle piattaforme valorizzano certi formati (i video/reel ricevono un <em>boost algoritmico</em>). Sociologicamente, ciò non descrive solo preferenze degli utenti, ma la logica economica della piattaforma che massimizza il tempo di permanenza. Questo è un caso di <em>confusione algoritmica</em> (caratteristica n°8 di Salganik): il dato osservato è in parte artefatto della piattaforma, non solo del comportamento organico degli utenti.
+      </p>
+    </div>
+
+    <!-- 5 — Distribuzione bimodale o confronto gruppi -->
+    <div class="grafico-card">
+      <div class="grafico-tipo">Grafico a barre · Distribuzione frequenze</div>
+      <h3>Consumo TG per livello di istruzione (medie condizionate)</h3>
+      <div class="grafico-visual">
+        <div style="font-size:10px; color:var(--muted); margin-bottom:10px;">Minuti medi di TG/giorno per titolo di studio</div>
+        <div class="bar-chart">
+          <div class="bar-row"><span class="bar-label">Lic. elementare</span><div class="bar-track"><div class="bar-fill yellow" style="width:72%">72 min</div></div></div>
+          <div class="bar-row"><span class="bar-label">Lic. media</span><div class="bar-track"><div class="bar-fill yellow" style="width:58%">58 min</div></div></div>
+          <div class="bar-row"><span class="bar-label">Diploma</span><div class="bar-track"><div class="bar-fill yellow" style="width:44%">44 min</div></div></div>
+          <div class="bar-row"><span class="bar-label">Laurea+</span><div class="bar-track"><div class="bar-fill yellow" style="width:30%">30 min</div></div></div>
+        </div>
+      </div>
+      <p class="soc-note">
+        <strong>Come si legge:</strong> la relazione negativa tra istruzione e consumo TG tradizionale emerge chiaramente dalla lunghezza decrescente delle barre. Ogni barra è la media condizionata della VD per quella categoria della VI.<br><br>
+        <strong>Lettura sociologica:</strong> il fenomeno riflette la <em>stratificazione dei media</em>: i più istruiti migrano verso fonti online, podcast e giornali, mentre i meno istruiti restano più legati alla TV tradizionale. Attenzione però alla variabile confondente <em>età</em>: istruzione bassa e età avanzata sono correlate — potrebbe essere l'età (non l'istruzione in sé) a guidare il consumo. Un modello multivariato permetterebbe di separare i due effetti.
+      </p>
+    </div>
+
+    <!-- 6 — Scatterplot correlazione forte positiva -->
+    <div class="grafico-card">
+      <div class="grafico-tipo">Scatterplot · Correlazione forte positiva</div>
+      <h3>Ore di studio e voto d'esame (r ≈ +0.78)</h3>
+      <div class="grafico-visual">
+        <div style="position:relative; padding-left:30px;">
+          <div class="scatter-label-y">Voto (18–30)</div>
+          <div class="scatter-area">
+            <svg class="trend-line" viewBox="0 0 100 140" preserveAspectRatio="none">
+              <line x1="0" y1="130" x2="100" y2="10" stroke="rgba(106,255,184,0.5)" stroke-width="1.5" stroke-dasharray="4,3"/>
+            </svg>
+            <div class="scatter-dot" style="left:8%;bottom:10%; background:var(--accent3);"></div>
+            <div class="scatter-dot" style="left:14%;bottom:18%; background:var(--accent3);"></div>
+            <div class="scatter-dot" style="left:20%;bottom:25%; background:var(--accent3);"></div>
+            <div class="scatter-dot" style="left:25%;bottom:20%; background:var(--accent3);"></div>
+            <div class="scatter-dot" style="left:30%;bottom:35%; background:var(--accent3);"></div>
+            <div class="scatter-dot" style="left:35%;bottom:40%; background:var(--accent3);"></div>
+            <div class="scatter-dot" style="left:40%;bottom:50%; background:var(--accent3);"></div>
+            <div class="scatter-dot" style="left:45%;bottom:45%; background:var(--accent3);"></div>
+            <div class="scatter-dot" style="left:50%;bottom:55%; background:var(--accent3);"></div>
+            <div class="scatter-dot" style="left:55%;bottom:62%; background:var(--accent3);"></div>
+            <div class="scatter-dot" style="left:60%;bottom:68%; background:var(--accent3);"></div>
+            <div class="scatter-dot" style="left:65%;bottom:72%; background:var(--accent3);"></div>
+            <div class="scatter-dot" style="left:70%;bottom:78%; background:var(--accent3);"></div>
+            <div class="scatter-dot" style="left:78%;bottom:82%; background:var(--accent3);"></div>
+            <div class="scatter-dot" style="left:85%;bottom:88%; background:var(--accent3);"></div>
+            <div class="scatter-dot" style="left:90%;bottom:92%; background:var(--accent3);"></div>
+          </div>
+          <div class="scatter-label-x">Ore di studio</div>
+        </div>
+      </div>
+      <p class="soc-note">
+        <strong>Come si legge:</strong> la nuvola di punti si dispone lungo la diagonale ascendente — correlazione forte positiva (r ≈ 0.78). I punti sono vicini alla retta: poca dispersione residua.<br><br>
+        <strong>Lettura sociologica:</strong> la correlazione studio–voto sembra ovvia, ma nasconde dinamiche sociali. Studi come PISA mostrano che <em>le ore di studio non sono ugualmente produttive</em> tra classi sociali diverse: l'efficacia dipende da capitale culturale familiare, qualità dell'insegnamento, condizioni abitative. Questo è un caso in cui r elevato è reale ma la <em>causalità è mediata</em> da variabili di contesto sociale, non solo dalla volontà individuale.
+      </p>
+    </div>
+
+    <!-- 7 — Big Data: grafico tweet vs voti (Tumasjan) -->
+    <div class="grafico-card">
+      <div class="grafico-tipo">Grafico a barre comparativo · Big Data non rappresentativi</div>
+      <h3>Caso Tumasjan: % menzioni Twitter vs % voti elezioni tedesche 2009</h3>
+      <div class="grafico-visual">
+        <div style="display:flex; gap:16px;">
+          <div style="flex:1;">
+            <div style="font-size:10px; color:var(--accent); margin-bottom:6px;">% Tweet (con Partito Pirata)</div>
+            <div class="bar-chart">
+              <div class="bar-row"><span class="bar-label" style="width:60px;">CDU</span><div class="bar-track"><div class="bar-fill purple" style="width:25%">25%</div></div></div>
+              <div class="bar-row"><span class="bar-label" style="width:60px;">SPD</span><div class="bar-track"><div class="bar-fill purple" style="width:18%">18%</div></div></div>
+              <div class="bar-row"><span class="bar-label" style="width:60px;">Verdi</span><div class="bar-track"><div class="bar-fill purple" style="width:13%">13%</div></div></div>
+              <div class="bar-row"><span class="bar-label" style="width:60px;">Piraten</span><div class="bar-track"><div class="bar-fill red" style="width:40%">40%!</div></div></div>
+            </div>
+          </div>
+          <div style="flex:1;">
+            <div style="font-size:10px; color:var(--accent3); margin-bottom:6px;">% Voti reali</div>
+            <div class="bar-chart">
+              <div class="bar-row"><span class="bar-label" style="width:60px;">CDU</span><div class="bar-track"><div class="bar-fill green" style="width:33%">33%</div></div></div>
+              <div class="bar-row"><span class="bar-label" style="width:60px;">SPD</span><div class="bar-track"><div class="bar-fill green" style="width:23%">23%</div></div></div>
+              <div class="bar-row"><span class="bar-label" style="width:60px;">Verdi</span><div class="bar-track"><div class="bar-fill green" style="width:11%">11%</div></div></div>
+              <div class="bar-row"><span class="bar-label" style="width:60px;">Piraten</span><div class="bar-track"><div class="bar-fill green" style="width:2%">2%</div></div></div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <p class="soc-note">
+        <strong>Come si legge:</strong> confrontare due grafici a barre affiancati rivela discrepanze. Il Partito Pirata domina le menzioni (40%) ma ottiene solo il 2% dei voti reali: il dataset Twitter era profondamente non rappresentativo.<br><br>
+        <strong>Lettura sociologica:</strong> questo è il caso-studio chiave della <em>non rappresentatività</em> dei Big Data. Tumasjan aveva escluso il Partito Pirata dal dataset, ottenendo una corrispondenza apparente. È un esempio di <em>cherry picking</em> inconsapevole. Sociologicamente dimostra che Twitter era nel 2009 uno spazio prevalentemente di nicchia politicizzata, non uno specchio dell'elettorato. La dimensione del dataset (milioni di tweet) non compensa il bias di selezione — più dati distorti non producono risultati più accurati.
+      </p>
+    </div>
+
+    <!-- 8 — Box plot / IQR -->
+    <div class="grafico-card">
+      <div class="grafico-tipo">Box plot · IQR e dispersione</div>
+      <h3>Distribuzione età degli intervistati: Q1, Mediana, Q3, Outlier</h3>
+      <div class="grafico-visual">
+        <div style="padding: 10px 20px; position:relative;">
+          <div style="font-size:10px; color:var(--muted); margin-bottom:14px;">Età in anni</div>
+          <!-- asse orizzontale simulato -->
+          <div style="position:relative; height:60px; display:flex; align-items:center;">
+            <!-- baffo sinistro -->
+            <div style="width:10%; height:2px; background:var(--muted);"></div>
+            <!-- box Q1-mediana -->
+            <div style="width:25%; height:34px; background:rgba(124,106,255,0.25); border:2px solid var(--accent); border-right:none; display:flex; align-items:center; justify-content:center; font-size:10px; color:var(--muted);">Q1=28</div>
+            <!-- box mediana-Q3 -->
+            <div style="width:25%; height:34px; background:rgba(106,255,184,0.15); border:2px solid var(--accent3); border-left:2px solid var(--accent2); display:flex; align-items:center; justify-content:center; font-size:11px; font-weight:700; color:var(--accent2);">Md=41</div>
+            <!-- box Q3 -->
+            <div style="width:25%; height:34px; background:rgba(124,106,255,0.25); border:2px solid var(--accent); border-left:none; display:flex; align-items:center; justify-content:center; font-size:10px; color:var(--muted);">Q3=59</div>
+            <!-- baffo destro -->
+            <div style="width:10%; height:2px; background:var(--muted);"></div>
+            <!-- outlier -->
+            <div style="width:6px; height:6px; border-radius:50%; background:var(--accent2); margin-left:4px;" title="outlier"></div>
+            <div style="width:6px; height:6px; border-radius:50%; background:var(--accent2); margin-left:4px;" title="outlier"></div>
+          </div>
+          <div style="display:flex; justify-content:space-between; font-size:9px; color:var(--muted); margin-top:4px; padding:0 0 0 10%;">
+            <span>Min=18</span><span>Q1=28</span><span>Med=41</span><span>Q3=59</span><span>Max=74</span><span style="color:var(--accent2);">●outlier</span>
+          </div>
+          <div style="margin-top:10px; font-size:11px; color:var(--muted);">IQR = Q3 − Q1 = 59 − 28 = <strong style="color:var(--accent3);">31 anni</strong></div>
+        </div>
+      </div>
+      <p class="soc-note">
+        <strong>Come si legge:</strong> la scatola centrale contiene il 50% dei dati (da Q1 a Q3). La linea interna è la mediana. I "baffi" si estendono ai valori non-outlier; i pallini oltre sono outlier.<br><br>
+        <strong>Lettura sociologica:</strong> il box plot è potente per mostrare la <em>disuguaglianza nella distribuzione</em> di qualsiasi risorsa sociale. Un IQR ampio (31 anni) segnala che il campione è eterogeneo demograficamente — dato importante per la ricerca politica, dove le coorti generazionali hanno orientamenti molto diversi. Gli outlier (persone molto anziane) giustificano l'uso della mediana anziché della media per descrivere l'età "tipica" del campione.
+      </p>
+    </div>
+
+  </div>
+</div>
+
 </main>
 
 <script>
@@ -679,7 +968,7 @@ function showSection(id) {
   document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
   document.getElementById(id).classList.add('active');
   const navBtns = document.querySelectorAll('.nav-btn');
-  const map = ['overview','schemi','flashcards','quiz','formule'];
+  const map = ['overview','schemi','flashcards','quiz','formule','grafici'];
   const idx = map.indexOf(id);
   if (idx >= 0) navBtns[idx].classList.add('active');
   if (id === 'quiz' && !quizStarted) initQuiz();
